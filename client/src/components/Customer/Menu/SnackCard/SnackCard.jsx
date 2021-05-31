@@ -50,6 +50,7 @@ const SnackCard = ({
     if (localTruck?._id !== truck?._id) {
       return false;
     }
+    if (order && order.status !== "outstanding") return false;
     if (order) {
       const startDate = Date.parse(order.dateStart);
       const endDate = Date.now();

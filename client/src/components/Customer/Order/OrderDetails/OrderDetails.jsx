@@ -1,6 +1,5 @@
 import React from "react";
 import { calculateTotalPrice } from "../../../../actions/utils";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import "./OrderDetails.css";
 
 const SnackDetail = ({ quantity, name, price, discount }) => {

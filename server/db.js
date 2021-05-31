@@ -2,14 +2,14 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-const DB = process.env.CONNECTION_URL || "mongodb://localhost:27017/Trukk";
+const DB = process.env.CONNECTION_URL || "mongodb://localhost:27017/trukkDB";
 
 // connect to the DB
 mongoose.connect(DB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
-  dbName: "Trukk",
+  dbName: "trukkDB",
 });
 
 const db = mongoose.connection;

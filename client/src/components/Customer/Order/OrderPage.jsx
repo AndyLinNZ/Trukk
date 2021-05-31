@@ -5,6 +5,7 @@ import NavBar from "../NavBar/NavBar";
 import Utensils from "../../svg/Utensils";
 import OrderDetails from "./OrderDetails/OrderDetails";
 import ConfirmModal from "./ConfirmModal/ConfirmModal";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import LocationDescription from "./OrderDescription/LocationDescription";
 import TimeDescription from "./OrderDescription/TimeDescription";
 import RatingForm from "./Rating/RatingForm";
@@ -30,6 +31,7 @@ const OrderPage = (props) => {
   const location = useLocation();
   const history = useHistory();
 
+  const [orderLoading, setOrderLoading] = useState(false);
   const [truck, setTruck] = useState();
   // Finished is a state to indicate when the user has gone through the entire order
   const [finished, setFinished] = useState(false);
@@ -69,6 +71,7 @@ const OrderPage = (props) => {
     }
     // place order
     try {
+      setOrderLoading(true);
       const res = await createOrder(
         customerId,
         localTruck._id,
@@ -76,6 +79,8 @@ const OrderPage = (props) => {
         calculateTotalPrice(snacks)
       );
       setOrder(res);
+      window.localStorage.setItem("currentOrder", JSON.stringify(res));
+      setOrderLoading(false);
       // send socket update to vendor an order has been created
       socketIO.emit("order-created", localTruck._id);
     } catch (err) {
@@ -133,7 +138,6 @@ const OrderPage = (props) => {
       socketIO.emit("join", order._id);
       // first order being created
       if (order.status === "outstanding") {
-        window.localStorage.setItem("currentOrder", JSON.stringify(order));
         history.push(`/order/${order._id}`);
       }
       // order is completed
@@ -157,6 +161,22 @@ const OrderPage = (props) => {
       socketIO.off("order-status-update");
     };
   }, [order, id, history]);
+
+  if (orderLoading) {
+    return (
+      <>
+        <div className="order-details-mask">
+          <NavBar
+            capsuleColour="#ccc"
+            text={truck ? truck.name : localTruck.name}
+            before={<Utensils />}
+            after={truck ? `` : `${round2(localTruck.distanceFromUser)} km`}
+          />
+        </div>
+        <CircularProgress className="spinner" />{" "}
+      </>
+    );
+  }
 
   return (
     <>

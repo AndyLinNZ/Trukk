@@ -73,6 +73,7 @@ const Menu = () => {
   const canChange = (orderedSnacks) => {
     // active order and there are snacks in cart
     if (order && orderedSnacks.length > 0 && order.van._id === truck._id) {
+      if (order.status !== "outstanding") return false;
       let startDate = Date.parse(order.dateStart);
       let endDate = Date.now();
       const time = (endDate - startDate) / 1000;
